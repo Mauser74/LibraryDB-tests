@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Пользователи с непустыми корзинами</h2>
+
+{% if carts %}
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Пользователь</th>
+        <th>Книг в корзине</th>
+        <th>Действия</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for cart in carts %}
+        <tr>
+          <td>{{ cart.user.full_name }} ({{ cart.user.email }})</td>
+          <td>{{ cart.books.count }}</td>
+          <td>
+            <a href="{% url 'staff_view_user_cart' cart.user.id %}" class="btn btn-sm btn-info">Просмотреть</a>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% else %}
+  <p>Нет пользователей с книгами в корзине.</p>
+{% endif %}
+
+<a href="{% url 'index' %}" class="btn btn-secondary">← Назад</a>
+{% endblock %}

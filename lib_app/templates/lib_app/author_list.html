@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+    <h1>{{ title }}</h1>
+
+    <!-- Поиск -->
+    <form method="get" class="mb-3">
+        <div class="input-group">
+            <input type="search"
+                   name="q"
+                   value="{{ search_query|default:'' }}"
+                   placeholder="Поиск по имени автора"
+                   class="form-control">
+            <button type="submit" class="btn btn-primary">Найти</button>
+        </div>
+    </form>
+
+    <!-- Список авторов -->
+    {% if authors %}
+        <ul class="list-group">
+            {% for author in authors %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        {{ author.name }}
+                        {% if author.date_of_birth or author.date_of_death %}
+                            <small class="text-muted">
+                                ({{ author.date_of_birth|date:"Y"|default:"?" }} – {{ author.date_of_death|date:"Y"|default:"?" }})
+                            </small>
+                        {% endif %}
+                    </div>
+                    <div>
+                        {% if perms.lib_app.change_author %}
+                            <a href="{% url 'author_edit' author.pk %}" class="btn btn-sm btn-warning me-1">Редактировать</a>
+                        {% endif %}
+                        {% if perms.lib_app.delete_author %}
+                            <form method="post" action="{% url 'author_delete' author.pk %}" style="display: inline;">
+                                {% csrf_token %}
+                                <button type="submit"
+                                        class="btn btn-sm btn-danger"
+                                        aria-label="Удалить автора {{ author.name }}"
+                                        onclick="return confirm('Вы уверены, что хотите удалить автора «{{ author.name }}»?')">
+                                    Удалить
+                                </button>
+                            </form>
+                        {% endif %}
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Авторы не найдены.</p>
+    {% endif %}
+
+    <!-- Пагинация -->
+    {% if is_paginated %}
+        <nav aria-label="Пагинация" class="mt-4">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?q={{ search_query|urlencode }}&page=1">&laquo; первая</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?q={{ search_query|urlencode }}&page={{ page_obj.previous_page_number }}">‹ предыдущая</a>
+                    </li>
+                {% endif %}
+
+                <li class="page-item disabled">
+                    <span class="page-link">Стр. {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</span>
+                </li>
+
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?q={{ search_query|urlencode }}&page={{ page_obj.next_page_number }}">следующая ›</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?q={{ search_query|urlencode }}&page={{ page_obj.paginator.num_pages }}">последняя &raquo;</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    {% endif %}
+{% endblock %}

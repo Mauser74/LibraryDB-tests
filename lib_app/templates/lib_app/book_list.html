@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>{{ title }}</h2>
+
+    <form method="get" class="mb-3">
+        <label for="site-search">Поиск по названию, автору, ключевым словам или ISBN:</label>
+        <input type="search" id="site-search" name="q" value="{{ search_query|default:'' }}" class="form-control" style="max-width: 400px; display: inline;">
+        <button type="submit" class="btn btn-primary">Найти</button>
+    </form>
+
+    <ul class="list-group">
+        {% for book in book_list %}
+            <li class="list-group-item">
+            <h5>
+                <a href="{% url 'book_detail' book.pk %}" title="Подробнее о книге">
+                    {{ book.title }}
+                </a>
+            </h5>
+            <p><strong>Автор:</strong> {{ book.author.name }}</p>
+            {% if book.isbn %}
+                <p><strong>ISBN:</strong> {{ book.isbn }}</p>
+            {% endif %}
+
+            {% if book.available %}
+                <span class="text-success">Доступна</span>
+                {% if user.is_authenticated and not user.is_staff %}
+                    <div class="mt-2">
+                        {% if book.pk in cart_book_ids %}
+                            <form method="post" action="{% url 'remove_from_cart' book.pk %}" style="display: inline;">
+                                {% csrf_token %}
+                                <button type="submit"
+                                        class="btn btn-sm btn-outline-secondary"
+                                        aria-label="Убрать книгу {{ book.title }} из корзины">
+                                    Убрать из корзины
+                                </button>
+                            </form>
+                        {% else %}
+                            <form method="post" action="{% url 'add_to_cart' book.pk %}" style="display: inline;">
+                                {% csrf_token %}
+                                <button type="submit"
+                                        class="btn btn-sm btn-primary"
+                                        aria-label="Добавить книгу {{ book.title }} в корзину">
+                                    В корзину
+                                </button>
+                            </form>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            {% else %}
+                <span class="text-danger">Выдана</span>
+            {% endif %}
+
+            <div class="mt-2">
+                {% if perms.lib_app.change_book %}
+                    <a href="{% url 'book_edit' book.pk %}"
+                       class="btn btn-sm btn-warning"
+                       aria-label="Редактировать книгу {{ book.title }}">
+                        Редактировать
+                    </a>
+                {% endif %}
+                {% if perms.lib_app.delete_book %}
+                    <form method="post" action="{% url 'book_delete' book.pk %}" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit"
+                                class="btn btn-sm btn-danger"
+                                aria-label="Удалить книгу {{ book.title }}"
+                                onclick="return confirm('Удалить книгу «{{ book.title }}»? Это действие нельзя отменить.')">
+                            Удалить
+                        </button>
+                    </form>
+                {% endif %}
+            </div>
+        </li>
+        {% empty %}
+            <li class="list-group-item">Книги не найдены.</li>
+        {% endfor %}
+    </ul>
+
+    {% if is_paginated %}
+      <nav aria-label="Страницы">
+        <ul class="pagination justify-content-center mt-3">
+          {% if page_obj.has_previous %}
+            <li class="page-item"><a class="page-link" href="?q={{ search_query|urlencode }}&page=1">« первая</a></li>
+            <li class="page-item"><a class="page-link" href="?q={{ search_query|urlencode }}&page={{ page_obj.previous_page_number }}">‹ предыдущая</a></li>
+          {% endif %}
+
+          <li class="page-item disabled"><span class="page-link">Стр. {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</span></li>
+
+          {% if page_obj.has_next %}
+            <li class="page-item"><a class="page-link" href="?q={{ search_query|urlencode }}&page={{ page_obj.next_page_number }}">следующая ›</a></li>
+            <li class="page-item"><a class="page-link" href="?q={{ search_query|urlencode }}&page={{ page_obj.paginator.num_pages }}">последняя »</a></li>
+          {% endif %}
+        </ul>
+      </nav>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,21 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">Библиотека №46</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <!-- Пункты меню для разных категорий пользователей -->
+            {% if user.is_staff %}
+                <!-- Персонал -->
+                {% include 'include/menu_staff.html' %}
+            {% elif user.is_authenticated %}
+                <!-- Зарегистрирован -->
+                {% include 'include/menu_registred.html' %}
+            {% else %}
+                <!-- Гость -->
+                {% include 'include/menu_guest.html' %}
+            {% endif %}
+        </div>
+    </div>
+</nav>

@@ -1,0 +1,39 @@
+<!-- Основные пункты слева -->
+<ul class="navbar-nav me-auto">
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'index' %}">Главная</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'book_list' %}">Книги</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'my_borrowed_books' %}">Мои книги</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'view_cart' %}">Корзина</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'about' %}">О нас</a>
+    </li>
+</ul>
+
+<!-- Пункты справа: авторизация / профиль -->
+<ul class="navbar-nav ms-auto">
+    <!-- Имя пользователя -->
+    <li class="nav-item">
+        <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">
+            {{ user.full_name }}
+        </a>
+    </li>
+    <!-- Кнопка выхода -->
+    <li class="nav-item">
+        <form method="post" action="{% url 'logout' %}" class="d-flex align-items-center h-100">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-link nav-link p-0 text-white text-decoration-none"
+                    style="line-height: 1.5; vertical-align: baseline;">
+                Выйти
+            </button>
+        </form>
+    </li>
+</ul>
+

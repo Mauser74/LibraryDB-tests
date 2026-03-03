@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Выданные книги: {{ borrower.full_name }} ({{ borrower.email }})</h2>
+
+{% if borrowed_books %}
+    <ul class="list-group">
+        {% for bb in borrowed_books %}
+            <li class="list-group-item">
+                <strong>{{ bb.book.title }}</strong> ({{ bb.book.author.name }})
+                <br>
+                Выдана: {{ bb.borrowed_at|date:"d.m.Y H:i" }}
+                <form method="post" action="{% url 'return_book' bb.id %}" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-sm btn-success"
+                            onclick="return confirm('Вернуть книгу «{{ bb.book.title }}»?')">
+                        Вернуть книгу
+                    </button>
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <!-- Пагинация (автоматически работает благодаря ListView) -->
+    {% if is_paginated %}
+      <nav aria-label="Пагинация" class="mt-3">
+        <ul class="pagination justify-content-center">
+          {% if page_obj.has_previous %}
+            <li class="page-item">
+              <a class="page-link" href="?page=1">&laquo; первая</a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" href="?page={{ page_obj.previous_page_number }}">‹ предыдущая</a>
+            </li>
+          {% endif %}
+
+          <li class="page-item disabled">
+            <span class="page-link">Стр. {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</span>
+          </li>
+
+          {% if page_obj.has_next %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ page_obj.next_page_number }}">следующая ›</a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">последняя &raquo;</a>
+            </li>
+          {% endif %}
+        </ul>
+      </nav>
+    {% endif %}
+
+{% else %}
+    <p>У этого пользователя нет выданных книг.</p>
+{% endif %}
+
+<a href="{% url 'borrowing_users_list' %}" class="btn btn-secondary">← Назад к списку</a>
+{% endblock %}

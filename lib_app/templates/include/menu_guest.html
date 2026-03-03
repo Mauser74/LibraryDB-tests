@@ -1,0 +1,22 @@
+<!-- Основные пункты слева -->
+<ul class="navbar-nav me-auto">
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'index' %}">Главная</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'book_list' %}">Книги</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'about' %}">О нас</a>
+    </li>
+</ul>
+
+<!-- Пункты справа: авторизация / профиль -->
+<ul class="navbar-nav ms-auto">
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'login' %}">Войти</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'register' %}">Регистрация</a>
+    </li>
+</ul>

@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>{{ book.title }}</h1>
+
+    <p><strong>Автор:</strong> {{ book.author }}</p>
+
+    {% if book.translator %}
+        <p><strong>Переводчик:</strong> {{ book.translator }}</p>
+    {% endif %}
+
+    {% if book.year %}
+        <p><strong>Год издания:</strong> {{ book.year }}</p>
+    {% else %}
+        <p><strong>Год издания:</strong> неизвестен</p>
+    {% endif %}
+
+    {% if book.publisher %}
+        <p><strong>Издательство:</strong> {{ book.publisher }}</p>
+    {% endif %}
+
+    {% if book.isbn %}
+        <p><strong>ISBN:</strong> {{ book.isbn }}</p>
+    {% endif %}
+
+    {% if book.short_description %}
+        <p><strong>Краткое описание:</strong><br>{{ book.short_description }}</p>
+    {% endif %}
+
+    {% if book.key_words %}
+        <p><strong>Ключевые слова:</strong><br>{{ book.key_words }}</p>
+    {% endif %}
+
+    <p><strong>Выдана {{ book.times_of_issued }} раз(а)</strong></p>
+
+    {% if book.available %}
+        <span class="text-success">Доступна</span>
+        {% if user.is_authenticated and not user.is_staff %}
+            <form method="post" action="{% url 'add_to_cart' book.id %}" class="mt-2">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-primary">В корзину</button>
+            </form>
+        {% endif %}
+    {% else %}
+        <span class="text-danger">Выдана</span>
+    {% endif %}
+
+    <!-- Кнопки управления — ВНИЗУ -->
+    <div class="mt-4">
+        {% if perms.lib_app.change_book %}
+            <a href="{% url 'book_edit' book.pk %}" class="btn btn-warning">Редактировать</a>
+        {% endif %}
+        {% if perms.lib_app.delete_book %}
+            <a href="{% url 'book_delete' book.pk %}"
+               class="btn btn-danger ms-2"
+               onclick="return confirm('Удалить книгу «{{ book.title }}»?')">
+                Удалить
+            </a>
+        {% endif %}
+    </div>
+
+    <a href="{% url 'book_list' %}" class="btn btn-secondary mt-3">← Назад к списку книг</a>
+{% endblock %}

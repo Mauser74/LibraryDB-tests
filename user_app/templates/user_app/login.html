@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}Вход{% endblock %}
+
+{% block content %}
+    <h1>Вход в личный кабинет</h1>
+    <form method="post" class="mt-4">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Войти</button>
+    </form>
+    <a href="{% url 'register' %}" class="btn btn-secondary mt-3">Нет аккаунта? Зарегистрироваться</a>
+{% endblock %}
+
+{% if form.non_field_errors %}
+  <div class="alert alert-danger">
+    {% for error in form.non_field_errors %}
+      {{ error }}
+    {% endfor %}
+  </div>
+{% endif %}
+
+{% if form.errors %}
+  <ul>
+    {% for field in form %}
+      {% for error in field.errors %}
+        <li>{{ field.label }}: {{ error }}</li>
+      {% endfor %}
+    {% endfor %}
+  </ul>
+{% endif %}

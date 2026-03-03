@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>Пользователи с выданными книгами</h2>
+    {% if users %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Пользователь</th>
+                    <th>Email</th>
+                    <th>Книг на руках</th>  <!-- ← новая колонка -->
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                    <tr>
+                        <td>{{ user.full_name }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.active_books_count }}</td>  <!-- ← значение здесь -->
+                        <td>
+                            <a href="{% url 'user_borrowed_books_detail' user.id %}" class="btn btn-sm btn-info">
+                                Просмотреть книги
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Нет пользователей с выданными книгами.</p>
+    {% endif %}
+    <a href="{% url 'index' %}" class="btn btn-secondary">← Назад</a>
+{% endblock %}

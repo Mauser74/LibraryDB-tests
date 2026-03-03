@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Добро пожаловать в библиотеку №46!</h1>
+    <p>Здесь вы можете найти последние обновления и новости.</p>
+
+    <div class="row mt-4">
+        <!-- Общее количество книг -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Всего книг в библиотеке</h5>
+                    <p class="display-4">{{ total_books }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Топ-5 книг -->
+        <div class "col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Топ-5 самых популярных книг</h5>
+                    {% if top_books %}
+                        <ol>
+                            {% for book in top_books %}
+                                <li>
+                                    <strong>{{ book.title }}</strong> — {{ book.author.name }}
+                                    <small class="text-muted">({{ book.times_of_issued }} раз)</small>
+                                </li>
+                            {% endfor %}
+                        </ol>
+                    {% else %}
+                        <p>Пока ни одна книга не была выдана.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <a href="{% url 'book_list' %}" class="btn btn-primary">Перейти к каталогу книг</a>
+    </div>
+{% endblock %}

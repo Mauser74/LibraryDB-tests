@@ -1,0 +1,47 @@
+<!-- Основные пункты слева -->
+<ul class="navbar-nav me-auto">
+    <li class="nav-item"><a class="nav-link" href="{% url 'index' %}">Главная</a></li>
+    <li><a class="nav-link" href="{% url 'users_with_cart' %}">Выдать книги</a></li>
+    <li class="nav-item"><a class="nav-link" href="{% url 'borrowing_users_list' %}">Вернуть книги</a></li>
+    <li class="nav-item"><a class="nav-link" href="{% url 'about' %}">О нас</a></li>
+</ul>
+
+<!-- Пункты справа -->
+<ul class="navbar-nav ms-auto">
+    <!-- Имя пользователя -->
+    <li class="nav-item">
+        <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">
+            {{ user.full_name }}
+        </a>
+    </li>
+    <!-- Выпадающее меню для админа -->
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Админка
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="adminDropdown">
+            <li><a class="dropdown-item" href="{% url 'book_list' %}">Книги</a></li>
+            <li><a class="dropdown-item" href="{% url 'book_add' %}">Добавить книгу</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="{% url 'author_list' %}">Авторы</a></li>
+            <li><a class="dropdown-item" href="{% url 'author_add' %}">Добавить автора</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="{% url 'publisher_list' %}">Издательства</a></li>
+            <li><a class="dropdown-item" href="{% url 'publisher_add' %}">Добавить издательство</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="{% url 'user_list' %}">Пользователи</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="{% url 'admin:index' %}">Django Admin</a></li>
+        </ul>
+    </li>
+    <!-- Кнопка выхода -->
+    <li class="nav-item">
+        <form method="post" action="{% url 'logout' %}" class="d-flex align-items-center h-100">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-link nav-link p-0 text-white text-decoration-none"
+                    style="line-height: 1.5; vertical-align: baseline;">
+                Выйти
+            </button>
+        </form>
+    </li>
+</ul>
